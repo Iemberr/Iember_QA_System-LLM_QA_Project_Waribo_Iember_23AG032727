@@ -134,5 +134,5 @@ MIT License - Feel free to use and modify for educational purposes.
 
 ## 👨‍💻 Author
 
-Created by Iemberr
+Created by Iember
 
