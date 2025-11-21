@@ -1,0 +1,11 @@
+Name: [Your Full Name]
+Matric Number: [Your Matric Number]
+Live URL: [Your deployed application URL - e.g., https://your-app.onrender.com]
+GitHub Repository: [Your GitHub repo URL - e.g., https://github.com/yourusername/LLM_QA_Project_YourName_MatricNo]
+
+Instructions:
+1. Replace the placeholders above with your actual information
+2. Deploy your application to Render.com, PythonAnywhere, Streamlit Cloud, or Vercel
+3. Set the HUGGINGFACE_API_TOKEN environment variable in your deployment platform
+4. Test the deployed application and paste the live URL above
+5. Push all project files to GitHub and paste the repository link above

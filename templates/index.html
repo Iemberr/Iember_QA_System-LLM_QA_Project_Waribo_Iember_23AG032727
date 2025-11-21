@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LLM Q&A System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔥 Iember's LLM Q&A System</h1>
+            <p class="subtitle">Powered by Hugging Face Qwen 2.5</p>
+        </header>
+
+        <main>
+            <div class="question-section">
+                <label for="questionInput">Enter your question:</label>
+                <textarea 
+                    id="questionInput" 
+                    placeholder="Ask me anything... (e.g., What is machine learning?)"
+                    rows="4"
+                ></textarea>
+                <button id="askButton" onclick="askQuestion()">Ask Question</button>
+            </div>
+
+            <div id="loadingSpinner" class="loading" style="display: none;">
+                <div class="spinner"></div>
+                <p>Processing your question...</p>
+            </div>
+
+            <div id="resultsSection" class="results-section" style="display: none;">
+                <div class="result-card">
+                    <h3>📝 Original Question</h3>
+                    <p id="originalQuestion" class="result-text"></p>
+                </div>
+
+                <div class="result-card">
+                    <h3>🔍 Processed Question</h3>
+                    <p id="processedQuestion" class="result-text"></p>
+                </div>
+
+                <div class="result-card answer-card">
+                    <h3>💡 Answer</h3>
+                    <p id="answerText" class="result-text"></p>
+                </div>
+            </div>
+
+            <div id="errorSection" class="error-section" style="display: none;">
+                <h3>❌ Error</h3>
+                <p id="errorText"></p>
+            </div>
+        </main>
+
+        <footer>
+            <p>&copy; 2025 LLM Q&A Project </p>
+        </footer>
+    </div>
+
+    <script>
+        async function askQuestion() {
+            const questionInput = document.getElementById('questionInput');
+            const question = questionInput.value.trim();
+            
+            // Hide previous results
+            document.getElementById('resultsSection').style.display = 'none';
+            document.getElementById('errorSection').style.display = 'none';
+            
+            if (!question) {
+                showError('Please enter a question.');
+                return;
+            }
+            
+            // Show loading spinner
+            document.getElementById('loadingSpinner').style.display = 'block';
+            document.getElementById('askButton').disabled = true;
+            
+            try {
+                const response = await fetch('/ask', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ question: question })
+                });
+                
+                // Hide loading spinner
+                document.getElementById('loadingSpinner').style.display = 'none';
+                document.getElementById('askButton').disabled = false;
+                
+                if (!response.ok) {
+                    // Try to parse error JSON
+                    try {
+                        const errorData = await response.json();
+                        showError(errorData.error || `Server error: ${response.status}`);
+                    } catch {
+                        showError(`Server error: ${response.status} ${response.statusText}`);
+                    }
+                    return;
+                }
+                
+                const data = await response.json();
+                
+                if (data.error) {
+                    showError(data.error);
+                } else {
+                    showResults(data);
+                }
+                
+            } catch (error) {
+                document.getElementById('loadingSpinner').style.display = 'none';
+                document.getElementById('askButton').disabled = false;
+                showError('Network error: ' + error.message + '. Make sure the Flask server is running.');
+            }
+        }
+        
+        function showResults(data) {
+            document.getElementById('originalQuestion').textContent = data.original_question;
+            document.getElementById('processedQuestion').textContent = data.processed_question;
+            document.getElementById('answerText').textContent = data.answer || 'No answer received.';
+            document.getElementById('resultsSection').style.display = 'block';
+        }
+        
+        function showError(message) {
+            document.getElementById('errorText').textContent = message;
+            document.getElementById('errorSection').style.display = 'block';
+        }
+        
+        // Allow Enter key to submit (with Shift+Enter for new line)
+        document.getElementById('questionInput').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                askQuestion();
+            }
+        });
+    </script>
+</body>
+</html>
