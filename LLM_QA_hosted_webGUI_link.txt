@@ -1,5 +1,5 @@
 Name: Waribo Ijeoma Iember
 Matric Number:23AG032727
-Live URL: [Your deployed application URL - e.g., https://your-app.onrender.com]
+Live URL: https://iember-qa-system-llm-qa-project-waribo.onrender.com
 GitHub Repository: https://github.com/Iemberr/Iember_QA_System-LLM_QA_Project_Waribo_Iember_23AG032727
 
